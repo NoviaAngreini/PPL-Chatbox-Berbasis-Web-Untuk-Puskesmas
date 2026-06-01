@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Keys — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .mono { font-family: "JetBrains Mono", monospace; }
+
+    /* Key card */
+    .key-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .key-card:hover { box-shadow: var(--shadow); }
+    .key-card.inactive { opacity: .65; }
+
+    .key-card-header {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .key-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: var(--primary-xlight);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; color: var(--primary);
+    }
+    .key-icon.inactive { background: var(--bg); color: var(--text-light); }
+    .key-name { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+    .key-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .key-meta i { font-size: 11px; }
+
+    .key-status-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 99px;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .key-status-badge.active   { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .key-status-badge.inactive { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
+
+    .scope-badge {
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px;
+      background: var(--primary-xlight); color: var(--primary-dark);
+      border: 1px solid var(--primary-light);
+    }
+
+    .key-card-body {
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg); flex-wrap: wrap;
+    }
+    .key-value-wrap {
+      flex: 1; display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .key-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-light); white-space: nowrap; }
+    .key-value {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px; color: var(--text-dark);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 8px;
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      min-width: 0;
+    }
+    .key-value.blurred { filter: blur(4px); cursor: pointer; user-select: none; }
+
+    .key-actions { display: flex; gap: 7px; flex-shrink: 0; }
+
+    /* New key modal result */
+    .new-key-result {
+      background: #f0fdf4; border: 1px solid #86efac;
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      margin-bottom: 16px; display: none;
+    }
+    .new-key-result.show { display: block; }
+    .new-key-result p { font-size: 13px; color: #15803d; font-weight: 600; margin-bottom: 8px; }
+    .new-key-result code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px; background: #fff;
+      border: 1px solid #bbf7d0; color: #166534;
+      padding: 8px 12px; border-radius: 7px;
+      display: block; word-break: break-all;
+    }
+    .new-key-warn { font-size: 12px; color: #dc2626; margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+
+    /* How-to box */
+    .howto-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 22px;
+      margin-bottom: 22px; box-shadow: var(--shadow-sm);
+    }
+    .howto-box h3 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .howto-box h3 i { color: var(--primary); }
+    .code-snippet {
+      background: #0f172a; color: #e2e8f0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12.5px; padding: 12px 16px;
+      border-radius: 8px; line-height: 1.7;
+      margin-bottom: 10px; overflow-x: auto;
+    }
+    .code-snippet .cm { color: #64748b; }
+    .code-snippet .ck { color: #93c5fd; }
+    .code-snippet .cv { color: #86efac; }
+    .code-snippet .cn { color: #fca5a5; }
+    .howto-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .howto-tab { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 99px; cursor: pointer; border: 1px solid var(--border); color: var(--text-mid); background: var(--bg); transition: all .15s; }
+    .howto-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .howto-content { display: none; }
+    .howto-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-shield-alt"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital <span class="navbar-admin-badge">ADMIN</span></span>
+      <span class="brand-sub">Kelola API Keys</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Admin Mode</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <%- include('_sidebar') %>
+
+  <main class="main-content">
+    <div class="page-content">
+
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-plug"></i> Kelola API Keys</h2>
+        <p class="page-subtitle">Buat dan kelola API Key untuk integrasi eksternal (mobile app, sistem lain, dll)</p>
+      </div>
+
+      <!-- How to use -->
+      <div class="howto-box">
+        <h3><i class="fas fa-code"></i> Cara Penggunaan API Key</h3>
+        <div class="howto-tabs">
+          <button class="howto-tab active" onclick="switchTab('header')">Header</button>
+          <button class="howto-tab" onclick="switchTab('query')">Query String</button>
+          <button class="howto-tab" onclick="switchTab('curl')">cURL</button>
+          <button class="howto-tab" onclick="switchTab('js')">JavaScript</button>
+        </div>
+
+        <div class="howto-content active" id="tab-header">
+          <div class="code-snippet"><span class="cm"># Sertakan di header setiap request</span>
+<span class="ck">X-API-Key</span><span class="cv">: pkm_live_xxxxxxxxxxxxxxxxxxxx</span></div>
+        </div>
+        <div class="howto-content" id="tab-query">
+          <div class="code-snippet"><span class="cm"># Tambahkan sebagai query parameter</span>
+GET /api/v1/jadwal<span class="ck">?api_key=</span><span class="cv">pkm_live_xxxxxxxxxxxxxxxxxxxx</span></div>
+        </div>
+        <div class="howto-content" id="tab-curl">
+          <div class="code-snippet">curl -X GET https://yourdomain.com/api/v1/jadwal \
+  <span class="ck">-H</span> <span class="cv">"X-API-Key: pkm_live_xxxxxxxxxxxxxxxxxxxx"</span></div>
+        </div>
+        <div class="howto-content" id="tab-js">
+          <div class="code-snippet"><span class="cm">// Fetch API</span>
+fetch(<span class="cv">'/api/v1/jadwal'</span>, {
+  headers: { <span class="ck">'X-API-Key'</span>: <span class="cv">'pkm_live_xxxxxxxxxxxxxxxxxxxx'</span> }
+}).then(r => r.json()).then(console.log);</div>
+        </div>
+        <p style="font-size:12px;color:var(--text-light);"><i class="fas fa-info-circle"></i> API Key bisa dipakai bersama JWT — keduanya valid untuk endpoint yang sama.</p>
+      </div>
+
+      <!-- New key result -->
+      <div class="new-key-result" id="newKeyResult">
+        <p><i class="fas fa-check-circle"></i> API Key baru berhasil dibuat — salin sekarang!</p>
+        <code id="newKeyValue"></code>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-sm edit" onclick="copyNewKey()"><i class="fas fa-copy"></i> Salin Key</button>
+        </div>
+        <div class="new-key-warn"><i class="fas fa-exclamation-triangle"></i> Key ini hanya ditampilkan sekali. Simpan sekarang sebelum menutup halaman!</div>
+      </div>
+
+      <!-- Table + Add button -->
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <span class="admin-table-title"><i class="fas fa-plug"></i> Daftar API Keys (<%= apiKeys.length %>)</span>
+          <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Buat API Key Baru</button>
+        </div>
+
+        <% if (apiKeys.length === 0) { %>
+        <div class="empty-state">
+          <i class="fas fa-plug"></i>
+          <p>Belum ada API Key</p>
+          <small>Klik tombol "Buat API Key Baru" untuk membuat key pertama</small>
+        </div>
+        <% } else { %>
+          <% apiKeys.forEach(function(k) { %>
+          <div class="key-card <%= k.active ? '' : 'inactive' %>" id="card-<%= k.id %>">
+            <div class="key-card-header">
+              <div class="key-icon <%= k.active ? '' : 'inactive' %>"><i class="fas fa-plug"></i></div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <span class="key-name"><%= k.name %></span>
+                  <span class="key-status-badge <%= k.active ? 'active' : 'inactive' %>" id="badge-<%= k.id %>">
+                    <i class="fas fa-circle" style="font-size:7px;"></i>
+                    <%= k.active ? 'Aktif' : 'Nonaktif' %>
+                  </span>
+                </div>
+                <div class="key-meta">
+                  <span><i class="fas fa-calendar-alt"></i> Dibuat: <%= new Date(k.createdAt).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'}) %></span>
+                  <span><i class="fas fa-clock"></i> Terakhir digunakan: <%= k.lastUsed ? new Date(k.lastUsed).toLocaleString('id-ID') : 'Belum pernah' %></span>
+                </div>
+                <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap;">
+                  <% k.scope.forEach(function(s){ %><span class="scope-badge"><%= s %></span><% }) %>
+                </div>
+              </div>
+              <div class="key-actions">
+                <button class="btn-sm <%= k.active ? 'delete' : 'edit' %>" onclick="toggleKey(<%= k.id %>, <%= k.active %>)" id="toggle-<%= k.id %>">
+                  <i class="fas <%= k.active ? 'fa-ban' : 'fa-check' %>"></i>
+                  <%= k.active ? 'Nonaktifkan' : 'Aktifkan' %>
+                </button>
+                <button class="btn-sm delete" onclick="deleteKey(<%= k.id %>)">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              </div>
+            </div>
+            <div class="key-card-body">
+              <div class="key-value-wrap">
+                <span class="key-label">API Key</span>
+                <span class="key-value blurred mono" id="keyval-<%= k.id %>" onclick="revealKey(this)" title="Klik untuk tampilkan">
+                  <%= k.key %>
+                </span>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="btn-sm edit" onclick="revealKey(document.getElementById('keyval-<%= k.id %>'))" title="Tampilkan key">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn-sm edit" onclick="copyKey('<%= k.key %>')" title="Salin key">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <div style="margin-top:18px;">
+        <a href="/api/docs" target="_blank" class="btn-primary" style="display:inline-flex;">
+          <i class="fas fa-book-open"></i> Lihat Dokumentasi API
+        </a>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Buat API Key Baru -->
+<div class="modal-backdrop" id="apiKeyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-plug" style="color:var(--primary);margin-right:6px;"></i> Buat API Key Baru</span>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nama / Deskripsi Key</label>
+        <input class="form-control" id="keyName" placeholder="mis: Mobile App Android, Dashboard Eksternal"/>
+        <div style="font-size:12px;color:var(--text-light);margin-top:5px;">Nama ini membantu kamu mengidentifikasi key untuk aplikasi mana.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Scope / Hak Akses</label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="scopeRead"  value="read"  checked style="width:15px;height:15px;accent-color:var(--primary);"/>
+            <span><strong>read</strong> — Akses GET semua endpoint publik & privat</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" id="scopeWrite" value="write" style="width:15px;height:15px;accent-color:var(--primary);"/>
+            <span><strong>write</strong> — Akses POST, PUT, DELETE (butuh read juga)</span>
+          </label>
+        </div>
+      </div>
+      <div style="background:var(--primary-xlight);border:1px solid var(--primary-light);border-radius:var(--radius-xs);padding:11px 13px;font-size:12.5px;color:var(--primary-dark);">
+        <i class="fas fa-shield-alt"></i> Key yang dibuat akan langsung aktif. Simpan baik-baik — key hanya ditampilkan sekali saat pembuatan.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="form-control-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-primary" onclick="createKey()"><i class="fas fa-plus"></i> Buat Key</button>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.howto-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.howto-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function openModal() { document.getElementById('apiKeyModal').classList.add('open'); }
+function closeModal() {
+  document.getElementById('apiKeyModal').classList.remove('open');
+  document.getElementById('keyName').value = '';
+  document.getElementById('scopeRead').checked = true;
+  document.getElementById('scopeWrite').checked = false;
+}
+
+async function createKey() {
+  const name = document.getElementById('keyName').value.trim();
+  if (!name) return showToast('Nama key wajib diisi', 'error');
+
+  const scope = [];
+  if (document.getElementById('scopeRead').checked)  scope.push('read');
+  if (document.getElementById('scopeWrite').checked) scope.push('write');
+  if (!scope.length) scope.push('read');
+
+  const res = await fetch('/admin/apikeys', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, scope })
+  });
+  const data = await res.json();
+  if (!data.success) return showToast(data.message || 'Gagal membuat key', 'error');
+
+  closeModal();
+  // Show new key
+  document.getElementById('newKeyValue').textContent = data.data.key;
+  document.getElementById('newKeyResult').classList.add('show');
+  document.getElementById('newKeyResult').scrollIntoView({ behavior: 'smooth' });
+  showToast('API Key berhasil dibuat!', 'success');
+  setTimeout(() => location.reload(), 4000);
+}
+
+function copyNewKey() {
+  const val = document.getElementById('newKeyValue').textContent;
+  navigator.clipboard.writeText(val);
+  showToast('API Key disalin!', 'success');
+}
+
+function copyKey(key) {
+  navigator.clipboard.writeText(key);
+  showToast('Key disalin ke clipboard!', 'success');
+}
+
+function revealKey(el) {
+  el.classList.toggle('blurred');
+}
+
+async function toggleKey(id, currentlyActive) {
+  const res  = await fetch('/admin/apikeys/' + id + '/toggle', { method: 'PATCH' });
+  const data = await res.json();
+  if (!data.success) return showToast('Gagal mengubah status', 'error');
+
+  const nowActive = data.active;
+  const badge  = document.getElementById('badge-' + id);
+  const btn    = document.getElementById('toggle-' + id);
+  const card   = document.getElementById('card-' + id);
+
+  badge.className = 'key-status-badge ' + (nowActive ? 'active' : 'inactive');
+  badge.innerHTML = '<i class="fas fa-circle" style="font-size:7px;"></i> ' + (nowActive ? 'Aktif' : 'Nonaktif');
+  btn.className   = 'btn-sm ' + (nowActive ? 'delete' : 'edit');
+  btn.innerHTML   = '<i class="fas ' + (nowActive ? 'fa-ban' : 'fa-check') + '"></i> ' + (nowActive ? 'Nonaktifkan' : 'Aktifkan');
+  btn.onclick     = () => toggleKey(id, nowActive);
+  card.className  = 'key-card' + (nowActive ? '' : ' inactive');
+
+  showToast(nowActive ? 'Key diaktifkan' : 'Key dinonaktifkan', 'success');
+}
+
+async function deleteKey(id) {
+  if (!confirm('Hapus API Key ini? Integrasi yang menggunakan key ini akan berhenti berfungsi.')) return;
+  const res  = await fetch('/admin/apikeys/' + id, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('card-' + id)?.remove();
+    showToast('API Key dihapus', 'success');
+  }
+}
+
+document.getElementById('apiKeyModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>

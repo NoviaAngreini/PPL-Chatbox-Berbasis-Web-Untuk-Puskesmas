@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Puskesmas Digital - Konsultasi Kesehatan Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/landing.css" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="land-nav">
+      <div class="land-nav-inner">
+        <div class="land-brand">
+          <div class="land-brand-icon">
+            <i class="fas fa-stethoscope"></i>
+          </div>
+          <div>
+            <span class="land-brand-name">Puskesmas Digital Darul Kamal</span>
+            <span class="land-brand-tagline">Layanan Kesehatan Terpadu</span>
+          </div>
+        </div>
+        <div class="land-nav-links">
+          <a href="/jadwal">Jadwal</a>
+          <a href="/informasi">Kesehatan</a>
+          <a href="/tentang">Tentang</a>
+          <a href="/admin/login" style="color:#7c3aed;font-weight:600;">Admin</a>
+          <a href="/chat" class="land-nav-cta">Mulai Chat</a>
+        </div>
+        <button class="land-hamburger" id="landHamburger">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+
+      <div class="hero-inner">
+        <!-- Left: Robot Image -->
+        <div class="hero-image-side">
+          <div class="hero-img-wrap">
+            <div class="hero-blob"></div>
+            <img
+              src="/img/hero_robot.png"
+              alt="AI Kesehatan Robot"
+              class="hero-robot-img"
+            />
+
+            <!-- Floating badges -->
+            <div class="float-badge badge-1">
+              <i class="fas fa-heart-pulse"></i>
+              <span>Konsultasi AI</span>
+            </div>
+            <div class="float-badge badge-2">
+              <i class="fas fa-calendar-check"></i>
+              <span>Jadwal Dokter</span>
+            </div>
+            <div class="float-badge badge-3">
+              <i class="fas fa-shield-heart"></i>
+              <span>Aman & Terpercaya</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Text -->
+        <div class="hero-text-side">
+          <div class="hero-pill">
+            <span class="pill-dot"></span>
+            Layanan Kesehatan Digital #1
+          </div>
+          <h1 class="hero-title">
+            Konsultasi Cepat,<br />
+            <span class="hero-title-accent">Tanpa Ribet.</span>
+          </h1>
+          <p class="hero-desc">
+            Chat langsung dengan AI kesehatan untuk informasi, konsultasi awal,
+            dan panduan layanan Puskesmas. Tersedia 24 jam, mudah digunakan,
+            tanpa antrian.
+          </p>
+          <div class="hero-actions">
+            <a href="/chat" class="btn-hero-primary">
+              <i class="fas fa-comment-medical"></i>
+              Tanya Sekarang
+            </a>
+            <a href="/jadwal" class="btn-hero-secondary">
+              <i class="fas fa-calendar-alt"></i>
+              Lihat Jadwal
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">6+</span>
+              <span class="stat-lbl">Poli Aktif</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">24/7</span>
+              <span class="stat-lbl">Layanan AI</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-num">1000+</span>
+              <span class="stat-lbl">Pasien Puas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYANAN SECTION -->
+    <section class="layanan-section" id="layanan">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2 class="section-title">Layanan Kami</h2>
+          <p class="section-sub">
+            Berbagai layanan kesehatan terpadu yang mudah diakses
+          </p>
+        </div>
+        <div class="layanan-grid">
+          <a href="/chat" class="layanan-card">
+            <div
+              class="layanan-icon"
+              style="background: linear-gradient(135deg, #3b82f6, #60a5fa)"
+            >
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>Chatbot AI</h3>
+            <p>
+              Tanya apa saja tentang layanan puskesmas dan dapatkan jawaban
+              instan
+            </p>
+            <span class="layanan-arrow"
+              ><i class="fas fa-arrow-right"></i
+            ></span>
+          </a>
+          <a href="/jadwal" class="layanan-card">
+            <div
+              class="layanan-icon"
+              style="background: linear-gradient(135deg, #16a34a, #22c55e)"
+            >
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>Jadwal Poli</h3>
+            <p>Cek jadwal poli dan ketersediaan dokter secara real-time</p>
+            <span class="layanan-arrow"
+              ><i class="fas fa-arrow-right"></i
+            ></span>
+          </a>
+          <a href="/chat" class="layanan-card">
+            <div
+              class="layanan-icon"
+              style="background: linear-gradient(135deg, #7c3aed, #a78bfa)"
+            >
+              <i class="fas fa-notes-medical"></i>
+            </div>
+            <h3>Pendaftaran Info</h3>
+            <p>Informasi lengkap tentang prosedur pendaftaran dan antrian</p>
+            <span class="layanan-arrow"
+              ><i class="fas fa-arrow-right"></i
+            ></span>
+          </a>
+          <a href="/riwayat" class="layanan-card">
+            <div
+              class="layanan-icon"
+              style="background: linear-gradient(135deg, #ea580c, #fb923c)"
+            >
+              <i class="fas fa-history"></i>
+            </div>
+            <h3>Riwayat Chat</h3>
+            <p>Simpan dan lihat kembali riwayat percakapan Anda kapan saja</p>
+            <span class="layanan-arrow"
+              ><i class="fas fa-arrow-right"></i
+            ></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FITUR SECTION -->
+    <section class="fitur-section" id="fitur">
+      <div class="section-inner">
+        <div class="fitur-row">
+          <div class="fitur-text">
+            <div class="section-header" style="text-align: left">
+              <h2 class="section-title">Kenapa Pilih Kami?</h2>
+              <p class="section-sub">
+                Teknologi modern untuk pelayanan kesehatan yang lebih baik
+              </p>
+            </div>
+            <ul class="fitur-list">
+              <li>
+                <div class="fitur-icon-sm"><i class="fas fa-bolt"></i></div>
+                <div>
+                  <strong>Respon Cepat</strong>
+                  <p>
+                    Dapatkan informasi instan tanpa menunggu antrian panjang
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div class="fitur-icon-sm"><i class="fas fa-lock"></i></div>
+                <div>
+                  <strong>Privasi Terjaga</strong>
+                  <p>Data Anda aman, tidak disimpan di server manapun</p>
+                </div>
+              </li>
+              <li>
+                <div class="fitur-icon-sm">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div>
+                  <strong>Akses Mudah</strong>
+                  <p>Dapat diakses dari HP maupun laptop, kapan saja</p>
+                </div>
+              </li>
+              <li>
+                <div class="fitur-icon-sm"><i class="fas fa-star"></i></div>
+                <div>
+                  <strong>24/7 Siap Melayani</strong>
+                  <p>Chatbot AI selalu aktif, bahkan di luar jam kerja</p>
+                </div>
+              </li>
+            </ul>
+            <a
+              href="/chat"
+              class="btn-hero-primary"
+              style="display: inline-flex; margin-top: 24px"
+            >
+              <i class="fas fa-comment-medical"></i> Mulai Konsultasi
+            </a>
+          </div>
+          <div class="fitur-visual">
+            <div class="mockup-chat">
+              <div class="mockup-header">
+                <div class="mockup-avatar"><i class="fas fa-robot"></i></div>
+                <div>
+                  <p class="mockup-name">Asisten Puskesmas</p>
+                  <p class="mockup-status">
+                    <span class="status-dot-sm"></span> Online
+                  </p>
+                </div>
+              </div>
+              <div class="mockup-messages">
+                <div class="mkup-msg bot">
+                  👋 Halo! Ada yang bisa saya bantu?
+                </div>
+                <div class="mkup-msg user">Jadwal poli umum hari ini?</div>
+                <div class="mkup-msg bot">
+                  Poli Umum buka
+                  <strong>Senin–Sabtu, 08:00–12:00</strong> dengan dr. Ahmad
+                  Santoso ✅
+                </div>
+                <div class="mkup-msg user">Terima kasih!</div>
+                <div class="mkup-msg bot">
+                  Sama-sama! 😊 Ada lagi yang ingin ditanyakan?
+                </div>
+              </div>
+              <div class="mockup-input">
+                <span>Ketik pesan...</span>
+                <div class="mockup-send">
+                  <i class="fas fa-paper-plane"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="land-footer" id="kontak">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="land-brand-icon"><i class="fas fa-stethoscope"></i></div>
+          <div>
+            <span class="land-brand-name">Puskesmas Digital</span>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 4px">
+              Layanan Kesehatan Terpadu
+            </p>
+          </div>
+        </div>
+        <div class="footer-info">
+          <p>
+            <i class="fas fa-map-marker-alt"></i> JLN. T. FAKINAH KM.09 PEUKAN BILUY,  KEC. DARUL KAMAL
+          </p>
+          <p><i class="fas fa-phone"></i> 0813-6022-9095</p>
+          <p><i class="fas fa-clock"></i> Senin–Sabtu, 08:00–14:00 WIB</p>
+        </div>
+        <div class="footer-cta">
+          <a href="/chat" class="btn-hero-primary">
+            <i class="fas fa-comment-medical"></i> Tanya Sekarang
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Puskesmas Digital. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile nav toggle
+      const landHam = document.getElementById("landHamburger");
+      const navLinks = document.querySelector(".land-nav-links");
+      landHam &&
+        landHam.addEventListener("click", () =>
+          navLinks.classList.toggle("open"),
+        );
+
+      // Animate on scroll
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add("visible");
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document
+        .querySelectorAll(".layanan-card, .fitur-list li")
+        .forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

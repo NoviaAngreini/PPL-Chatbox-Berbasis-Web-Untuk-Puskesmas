@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadwal & Dokter - Puskesmas Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-stethoscope"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">Puskesmas Digital Darul Kamal</span>
+        <span class="brand-sub">Layanan Kesehatan Terpadu</span>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <div class="status-badge"><span class="status-dot"></span><span>Online</span></div>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </nav>
+
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header"><p class="sidebar-title">Menu Utama</p></div>
+      <nav class="sidebar-nav">
+          <a href="/chat" class="nav-item ">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chatbot</span>
+          </a>
+          <a href="/jadwal" class="nav-item active">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Jadwal & Dokter</span>
+          </a>
+          <a href="/riwayat" class="nav-item ">
+            <i class="fas fa-history"></i>
+            <span>Riwayat Chat</span>
+          </a>
+          <a href="/informasi" class="nav-item ">
+            <i class="fas fa-notes-medical"></i>
+            <span>Info Kesehatan</span>
+          </a>
+          <a href="/tentang" class="nav-item ">
+            <i class="fas fa-hospital"></i>
+            <span>Tentang Puskesmas</span>
+          </a>
+          <div style="height:1px;background:var(--border);margin:8px 12px;"></div>
+          <a href="/admin/login" class="nav-item nav-admin">
+            <i class="fas fa-shield-alt"></i>
+            <span>Panel Admin</span>
+          </a>
+        </nav>
+      <div class="sidebar-footer">
+        <div class="info-card"><i class="fas fa-phone-alt"></i><div><p class="info-label">Hotline</p><p class="info-value">0813-6022-9095</p></div></div>
+        <div class="info-card"><i class="fas fa-clock"></i><div><p class="info-label">Jam Operasional</p><p class="info-value">08:00 - 14:00 WIB</p></div></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-content">
+
+        <!-- Tab Navigation -->
+        <div class="page-header">
+          <h2 class="page-title"><i class="fas fa-calendar-alt"></i> Jadwal & Dokter</h2>
+          <p class="page-subtitle">Informasi poli dan tenaga medis Puskesmas Digital</p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabJadwal" onclick="switchTab('jadwal')">
+            <i class="fas fa-calendar-check"></i> Jadwal Poli
+          </button>
+          <button class="tab-btn" id="tabDokter" onclick="switchTab('dokter')">
+            <i class="fas fa-user-md"></i> Daftar Dokter
+          </button>
+        </div>
+
+        <!-- Tab Jadwal -->
+        <div class="tab-content" id="contentJadwal">
+          <div class="card-grid">
+            <% jadwalPoli.forEach(function(item) { %>
+            <div class="poli-card">
+              <div class="poli-card-header">
+                <div class="poli-icon">
+                  <i class="fas fa-hospital-alt"></i>
+                </div>
+                <span class="poli-status <%= item.status === 'Buka' ? 'status-buka' : 'status-tutup' %>">
+                  <i class="fas fa-circle"></i> <%= item.status %>
+                </span>
+              </div>
+              <h3 class="poli-name"><%= item.poli %></h3>
+              <div class="poli-info">
+                <div class="poli-info-row">
+                  <i class="fas fa-user-md"></i>
+                  <span><%= item.dokter %></span>
+                </div>
+                <div class="poli-info-row">
+                  <i class="fas fa-calendar-day"></i>
+                  <span><%= item.hari %></span>
+                </div>
+                <div class="poli-info-row">
+                  <i class="fas fa-clock"></i>
+                  <span><%= item.jam %></span>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Tab Dokter -->
+        <div class="tab-content hidden" id="contentDokter">
+          <div class="card-grid">
+            <% daftarDokter.forEach(function(item, index) { %>
+            <div class="dokter-card">
+              <div class="dokter-avatar">
+                <i class="fas fa-user-md"></i>
+                <span class="avatar-num"><%= index + 1 %></span>
+              </div>
+              <div class="dokter-info">
+                <h3 class="dokter-name"><%= item.nama %></h3>
+                <p class="dokter-spesialis"><%= item.spesialis %></p>
+                <p class="dokter-exp"><i class="fas fa-star"></i> <%= item.pengalaman %> Pengalaman</p>
+              </div>
+              <span class="dokter-status <%= item.status === 'Tersedia' ? 'status-buka' : 'status-tutup' %>">
+                <i class="fas fa-circle"></i> <%= item.status %>
+              </span>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <script src="/js/app.js"></script>
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      if (tab === 'jadwal') {
+        document.getElementById('tabJadwal').classList.add('active');
+        document.getElementById('contentJadwal').classList.remove('hidden');
+      } else {
+        document.getElementById('tabDokter').classList.add('active');
+        document.getElementById('contentDokter').classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>

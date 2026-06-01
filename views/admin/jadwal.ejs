@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kelola Jadwal - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-shield-alt"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital <span class="navbar-admin-badge">ADMIN</span></span>
+      <span class="brand-sub">Kelola Jadwal & Dokter</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Admin Mode</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <%- include('_sidebar') %>
+
+  <main class="main-content">
+    <div class="page-content">
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-calendar-check"></i> Kelola Jadwal & Dokter</h2>
+        <p class="page-subtitle">CRUD jadwal poli dan data dokter Puskesmas Digital</p>
+      </div>
+
+      <div class="tab-bar" style="margin-bottom:20px;">
+        <button class="tab-btn active" id="tabJadwal" onclick="switchTab('jadwal')"><i class="fas fa-calendar-check"></i> Jadwal Poli</button>
+        <button class="tab-btn" id="tabDokter" onclick="switchTab('dokter')"><i class="fas fa-user-md"></i> Daftar Dokter</button>
+      </div>
+
+      <!-- TAB JADWAL -->
+      <div id="contentJadwal">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <span class="admin-table-title"><i class="fas fa-calendar-alt"></i> Data Jadwal Poli (<span id="jadwalCount"><%= jadwalPoli.length %></span>)</span>
+            <button class="btn-primary" onclick="openModal('add-jadwal')"><i class="fas fa-plus"></i> Tambah Jadwal</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="jadwalTable">
+              <thead>
+                <tr><th>#</th><th>Poli</th><th>Hari</th><th>Jam</th><th>Dokter</th><th>Status</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="jadwalTbody">
+                <% jadwalPoli.forEach(function(j, i){ %>
+                <tr data-id="<%= j.id %>">
+                  <td style="color:var(--text-light);"><%= i+1 %></td>
+                  <td><strong><%= j.poli %></strong></td>
+                  <td style="color:var(--text-mid);font-size:13px;"><%= j.hari %></td>
+                  <td><span style="font-size:12px;font-weight:600;color:var(--primary);"><i class="fas fa-clock" style="margin-right:4px;"></i><%= j.jam %></span></td>
+                  <td style="color:var(--text-mid);"><%= j.dokter %></td>
+                  <td><span class="poli-status <%= j.status === 'Buka' ? 'status-buka' : 'status-tutup' %>"><i class="fas fa-circle"></i><%= j.status %></span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;">
+                      <button class="btn-sm edit" onclick='editJadwal(<%= JSON.stringify(j) %>)'><i class="fas fa-edit"></i> Edit</button>
+                      <button class="btn-sm delete" onclick="deleteJadwal(<%= j.id %>)"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB DOKTER -->
+      <div id="contentDokter" style="display:none;">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <span class="admin-table-title"><i class="fas fa-user-md"></i> Data Dokter (<span id="dokterCount"><%= daftarDokter.length %></span>)</span>
+            <button class="btn-primary" onclick="openModal('add-dokter')"><i class="fas fa-plus"></i> Tambah Dokter</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="dokterTable">
+              <thead>
+                <tr><th>#</th><th>Nama</th><th>Spesialis</th><th>Pengalaman</th><th>Status</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="dokterTbody">
+                <% daftarDokter.forEach(function(d, i){ %>
+                <tr data-id="<%= d.id %>">
+                  <td style="color:var(--text-light);"><%= i+1 %></td>
+                  <td><strong><%= d.nama %></strong></td>
+                  <td style="color:var(--text-mid);"><%= d.spesialis %></td>
+                  <td style="color:var(--primary);font-size:13px;font-weight:600;"><%= d.pengalaman %></td>
+                  <td><span class="poli-status <%= d.status === 'Tersedia' ? 'status-buka' : 'status-tutup' %>"><i class="fas fa-circle"></i><%= d.status %></span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;">
+                      <button class="btn-sm edit" onclick='editDokter(<%= JSON.stringify(d) %>)'><i class="fas fa-edit"></i> Edit</button>
+                      <button class="btn-sm delete" onclick="deleteDokter(<%= d.id %>)"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL ADD/EDIT JADWAL -->
+<div class="modal-backdrop" id="modal-add-jadwal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="jadwalModalTitle">Tambah Jadwal Poli</span>
+      <button class="modal-close" onclick="closeModal('add-jadwal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="jadwalId"/>
+      <div class="form-group"><label class="form-label">Nama Poli</label><input class="form-control" id="jadwalPoli" placeholder="mis: Poli Umum"/></div>
+      <div class="form-group"><label class="form-label">Hari</label><input class="form-control" id="jadwalHari" placeholder="mis: Senin - Sabtu"/></div>
+      <div class="form-group"><label class="form-label">Jam</label><input class="form-control" id="jadwalJam" placeholder="mis: 08:00 - 12:00"/></div>
+      <div class="form-group"><label class="form-label">Dokter</label><input class="form-control" id="jadwalDokter" placeholder="mis: dr. Ahmad Santoso"/></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" id="jadwalStatus"><option>Buka</option><option>Libur</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="form-control-cancel" onclick="closeModal('add-jadwal')">Batal</button>
+      <button class="btn-primary" onclick="saveJadwal()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ADD/EDIT DOKTER -->
+<div class="modal-backdrop" id="modal-add-dokter">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="dokterModalTitle">Tambah Dokter</span>
+      <button class="modal-close" onclick="closeModal('add-dokter')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="dokterId"/>
+      <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-control" id="dokterNama" placeholder="mis: dr. Ahmad Santoso"/></div>
+      <div class="form-group"><label class="form-label">Spesialis</label><input class="form-control" id="dokterSpesialis" placeholder="mis: Dokter Umum"/></div>
+      <div class="form-group"><label class="form-label">Pengalaman</label><input class="form-control" id="dokterPengalaman" placeholder="mis: 10 Tahun"/></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" id="dokterStatus"><option>Tersedia</option><option>Tidak Tersedia</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="form-control-cancel" onclick="closeModal('add-dokter')">Batal</button>
+      <button class="btn-primary" onclick="saveDokter()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+<script>
+function switchTab(tab) {
+  document.getElementById('contentJadwal').style.display = tab === 'jadwal' ? '' : 'none';
+  document.getElementById('contentDokter').style.display = tab === 'dokter' ? '' : 'none';
+  document.getElementById('tabJadwal').className = 'tab-btn' + (tab === 'jadwal' ? ' active' : '');
+  document.getElementById('tabDokter').className = 'tab-btn' + (tab === 'dokter' ? ' active' : '');
+}
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+  if (id === 'add-jadwal') {
+    document.getElementById('jadwalId').value = '';
+    document.getElementById('jadwalPoli').value = '';
+    document.getElementById('jadwalHari').value = '';
+    document.getElementById('jadwalJam').value = '';
+    document.getElementById('jadwalDokter').value = '';
+    document.getElementById('jadwalStatus').value = 'Buka';
+    document.getElementById('jadwalModalTitle').textContent = 'Tambah Jadwal Poli';
+  } else {
+    document.getElementById('dokterId').value = '';
+    document.getElementById('dokterNama').value = '';
+    document.getElementById('dokterSpesialis').value = '';
+    document.getElementById('dokterPengalaman').value = '';
+    document.getElementById('dokterStatus').value = 'Tersedia';
+    document.getElementById('dokterModalTitle').textContent = 'Tambah Dokter';
+  }
+}
+
+function editJadwal(j) {
+  document.getElementById('jadwalModalTitle').textContent = 'Edit Jadwal Poli';
+  document.getElementById('jadwalId').value = j.id;
+  document.getElementById('jadwalPoli').value = j.poli;
+  document.getElementById('jadwalHari').value = j.hari;
+  document.getElementById('jadwalJam').value = j.jam;
+  document.getElementById('jadwalDokter').value = j.dokter;
+  document.getElementById('jadwalStatus').value = j.status;
+  openModal('add-jadwal');
+}
+
+async function saveJadwal() {
+  const id = document.getElementById('jadwalId').value;
+  const data = {
+    poli: document.getElementById('jadwalPoli').value.trim(),
+    hari: document.getElementById('jadwalHari').value.trim(),
+    jam: document.getElementById('jadwalJam').value.trim(),
+    dokter: document.getElementById('jadwalDokter').value.trim(),
+    status: document.getElementById('jadwalStatus').value
+  };
+  if (!data.poli || !data.hari || !data.jam || !data.dokter) return showToast('Semua field harus diisi', 'error');
+  const url = id ? `/admin/jadwal/${id}` : '/admin/jadwal';
+  const method = id ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  if (res.ok) {
+    showToast(id ? 'Jadwal berhasil diperbarui' : 'Jadwal berhasil ditambahkan', 'success');
+    closeModal('add-jadwal');
+    setTimeout(() => location.reload(), 800);
+  }
+}
+
+async function deleteJadwal(id) {
+  if (!confirm('Hapus jadwal ini?')) return;
+  const res = await fetch(`/admin/jadwal/${id}`, { method: 'DELETE' });
+  if (res.ok) { showToast('Jadwal dihapus', 'success'); setTimeout(() => location.reload(), 600); }
+}
+
+function editDokter(d) {
+  document.getElementById('dokterModalTitle').textContent = 'Edit Dokter';
+  document.getElementById('dokterId').value = d.id;
+  document.getElementById('dokterNama').value = d.nama;
+  document.getElementById('dokterSpesialis').value = d.spesialis;
+  document.getElementById('dokterPengalaman').value = d.pengalaman;
+  document.getElementById('dokterStatus').value = d.status;
+  openModal('add-dokter');
+}
+
+async function saveDokter() {
+  const id = document.getElementById('dokterId').value;
+  const data = {
+    nama: document.getElementById('dokterNama').value.trim(),
+    spesialis: document.getElementById('dokterSpesialis').value.trim(),
+    pengalaman: document.getElementById('dokterPengalaman').value.trim(),
+    status: document.getElementById('dokterStatus').value
+  };
+  if (!data.nama || !data.spesialis) return showToast('Nama dan spesialis harus diisi', 'error');
+  const url = id ? `/admin/dokter/${id}` : '/admin/dokter';
+  const method = id ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  if (res.ok) {
+    showToast(id ? 'Dokter diperbarui' : 'Dokter ditambahkan', 'success');
+    closeModal('add-dokter');
+    setTimeout(() => location.reload(), 800);
+  }
+}
+
+async function deleteDokter(id) {
+  if (!confirm('Hapus dokter ini?')) return;
+  const res = await fetch(`/admin/dokter/${id}`, { method: 'DELETE' });
+  if (res.ok) { showToast('Dokter dihapus', 'success'); setTimeout(() => location.reload(), 600); }
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(b => b.addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Admin - Puskesmas Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-shield-alt"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital <span class="navbar-admin-badge">ADMIN</span></span>
+      <span class="brand-sub">Panel Administrasi</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Admin Mode</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <%- include('_sidebar') %>
+
+  <main class="main-content">
+    <div class="page-content">
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-tachometer-alt"></i> Dashboard Admin</h2>
+        <p class="page-subtitle">Selamat datang di panel administrasi Puskesmas Digital</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fas fa-calendar-check"></i></div>
+          <div><div class="stat-num"><%= jadwalPoli.length %></div><div class="stat-label">Jadwal Poli</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fas fa-user-md"></i></div>
+          <div><div class="stat-num"><%= daftarDokter.length %></div><div class="stat-label">Dokter Aktif</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="fas fa-comments"></i></div>
+          <div><div class="stat-num"><%= chatHistory.length %></div><div class="stat-label">Riwayat Chat</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><i class="fas fa-newspaper"></i></div>
+          <div><div class="stat-num"><%= informasiKesehatan.length %></div><div class="stat-label">Artikel Kesehatan</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;">
+
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <span class="admin-table-title"><i class="fas fa-calendar-check"></i> Jadwal Terbaru</span>
+            <a href="/admin/jadwal" class="btn-primary" style="font-size:12px;padding:6px 13px;">Kelola</a>
+          </div>
+          <table class="admin-table">
+            <thead><tr><th>Poli</th><th>Dokter</th><th>Status</th></tr></thead>
+            <tbody>
+              <% jadwalPoli.slice(0,4).forEach(function(j){ %>
+              <tr>
+                <td><strong><%= j.poli %></strong></td>
+                <td style="color:var(--text-mid);font-size:12px;"><%= j.dokter %></td>
+                <td><span class="poli-status <%= j.status === 'Buka' ? 'status-buka' : 'status-tutup' %>"><i class="fas fa-circle"></i><%= j.status %></span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <span class="admin-table-title"><i class="fas fa-comments"></i> Chat Terbaru</span>
+            <a href="/admin/riwayat" class="btn-primary" style="font-size:12px;padding:6px 13px;">Lihat</a>
+          </div>
+          <table class="admin-table">
+            <thead><tr><th>Topik</th><th>Tanggal</th><th>Pesan</th></tr></thead>
+            <tbody>
+              <% chatHistory.slice(-4).reverse().forEach(function(c){ %>
+              <tr>
+                <td><strong><%= c.topik %></strong></td>
+                <td style="color:var(--text-mid);font-size:12px;"><%= new Date(c.tanggal).toLocaleDateString('id-ID') %></td>
+                <td><span style="font-size:12px;color:var(--primary);font-weight:600;"><%= c.pesan.length %> pesan</span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <span class="admin-table-title"><i class="fas fa-newspaper"></i> Artikel Terbaru</span>
+            <a href="/admin/informasi" class="btn-primary" style="font-size:12px;padding:6px 13px;">Kelola</a>
+          </div>
+          <table class="admin-table">
+            <thead><tr><th>Judul</th><th>Kategori</th></tr></thead>
+            <tbody>
+              <% informasiKesehatan.slice(0,4).forEach(function(i){ %>
+              <tr>
+                <td><strong><%= i.judul.length > 28 ? i.judul.substring(0,28)+'...' : i.judul %></strong></td>
+                <td><span class="poli-status status-buka"><%= i.kategori %></span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/admin/jadwal" class="btn-primary"><i class="fas fa-calendar-plus"></i> Tambah Jadwal</a>
+        <a href="/admin/informasi" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);box-shadow:0 2px 8px rgba(124,58,237,.3)"><i class="fas fa-plus"></i> Tambah Artikel</a>
+        <a href="/admin/puskesmas" class="btn-primary" style="background:linear-gradient(135deg,#ea580c,#fb923c);box-shadow:0 2px 8px rgba(234,88,12,.3)"><i class="fas fa-cog"></i> Edit Info Puskesmas</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>

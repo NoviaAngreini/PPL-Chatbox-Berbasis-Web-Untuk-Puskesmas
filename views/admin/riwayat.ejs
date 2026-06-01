@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat Chat - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-shield-alt"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital <span class="navbar-admin-badge">ADMIN</span></span>
+      <span class="brand-sub">Riwayat Chat Pasien</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Admin Mode</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <%- include('_sidebar') %>
+
+  <main class="main-content">
+    <div class="page-content">
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-comments"></i> Riwayat Chat Pasien</h2>
+        <p class="page-subtitle">Seluruh percakapan yang telah disimpan — total <%= chatHistory.length %> sesi</p>
+      </div>
+
+      <% if (chatHistory.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <p>Belum ada riwayat chat tersimpan</p>
+        <small>Riwayat akan muncul setelah pengguna menyimpan percakapan dari halaman chat</small>
+      </div>
+      <% } else { %>
+        <% chatHistory.slice().reverse().forEach(function(c) { %>
+        <div class="riwayat-card">
+          <div class="riwayat-card-header" onclick="toggleRiwayat(<%= c.id %>)">
+            <div class="riwayat-topic"><i class="fas fa-comment-dots"></i> <%= c.topik %></div>
+            <span class="riwayat-date"><i class="fas fa-calendar-alt"></i> <%= new Date(c.tanggal).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'}) %></span>
+            <span class="riwayat-msgs"><%= c.pesan.length %> pesan</span>
+            <i class="fas fa-chevron-down" id="chevron-<%= c.id %>" style="color:var(--text-light);font-size:12px;transition:.2s;"></i>
+            <button class="btn-sm delete" onclick="event.stopPropagation();deleteRiwayat(<%= c.id %>)"><i class="fas fa-trash"></i></button>
+          </div>
+          <div class="riwayat-body" id="body-<%= c.id %>">
+            <% c.pesan.forEach(function(p){ %>
+            <div style="display:flex;gap:10px;margin-bottom:10px;<%= p.role === 'user' ? 'flex-direction:row-reverse;' : '' %>">
+              <span class="detail-badge <%= p.role %>"><%= p.role === 'user' ? 'Pasien' : 'Bot' %></span>
+              <div class="detail-text"><%= p.text %></div>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+<script>
+function toggleRiwayat(id) {
+  const body = document.getElementById('body-' + id);
+  const chevron = document.getElementById('chevron-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  chevron.style.transform = isOpen ? 'rotate(0)' : 'rotate(180deg)';
+}
+async function deleteRiwayat(id) {
+  if (!confirm('Hapus riwayat chat ini?')) return;
+  const res = await fetch('/admin/riwayat/' + id, { method: 'DELETE' });
+  if (res.ok) { showToast('Riwayat dihapus', 'success'); setTimeout(() => location.reload(), 600); }
+}
+</script>
+</body>
+</html>

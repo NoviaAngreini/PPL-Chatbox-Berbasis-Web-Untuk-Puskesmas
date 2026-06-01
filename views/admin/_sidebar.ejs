@@ -1,0 +1,47 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header"><p class="sidebar-title">Menu Utama</p></div>
+
+  <nav class="sidebar-nav">
+    <a href="/chat"      class="nav-item"><i class="fas fa-comment-dots"></i><span>Chatbot</span></a>
+    <a href="/jadwal"    class="nav-item"><i class="fas fa-calendar-alt"></i><span>Jadwal & Dokter</span></a>
+    <a href="/riwayat"   class="nav-item"><i class="fas fa-history"></i><span>Riwayat Chat</span></a>
+    <a href="/informasi" class="nav-item"><i class="fas fa-notes-medical"></i><span>Info Kesehatan</span></a>
+    <a href="/tentang"   class="nav-item"><i class="fas fa-hospital"></i><span>Tentang Puskesmas</span></a>
+
+    <div style="height:1px;background:var(--border);margin:8px 12px;"></div>
+    <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#a78bfa;padding:4px 14px 2px;">Admin Panel</p>
+
+    <a href="/admin"           class="nav-item nav-admin <%= page === 'admin-dashboard' ? 'active' : '' %>"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+    <a href="/admin/jadwal"    class="nav-item nav-admin <%= page === 'admin-jadwal'    ? 'active' : '' %>"><i class="fas fa-calendar-check"></i><span>Kelola Jadwal</span></a>
+    <a href="/admin/riwayat"   class="nav-item nav-admin <%= page === 'admin-riwayat'   ? 'active' : '' %>"><i class="fas fa-comments"></i><span>Riwayat Chat</span></a>
+    <a href="/admin/informasi" class="nav-item nav-admin <%= page === 'admin-informasi' ? 'active' : '' %>"><i class="fas fa-newspaper"></i><span>Info Kesehatan</span></a>
+    <a href="/admin/puskesmas"       class="nav-item nav-admin <%= page === 'admin-puskesmas'       ? 'active' : '' %>"><i class="fas fa-cog"></i><span>Info Puskesmas</span></a>
+    <a href="/admin/ganti-password" class="nav-item nav-admin <%= page === 'admin-ganti-password' ? 'active' : '' %>"><i class="fas fa-key"></i><span>Ganti Password</span></a>
+    <a href="/admin/apikeys"        class="nav-item nav-admin <%= page === 'admin-apikeys'        ? 'active' : '' %>"><i class="fas fa-plug"></i><span>API Keys</span></a>
+  </nav>
+
+  <!-- Admin user card + logout -->
+  <div style="padding:12px;margin-top:auto;">
+    <div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:12px;padding:12px 14px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0;">
+          <%= adminUser ? adminUser.avatar : 'A' %>
+        </div>
+        <div style="overflow:hidden;">
+          <div style="font-size:13px;font-weight:700;color:#3b0764;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><%= adminUser ? adminUser.nama : 'Admin' %></div>
+          <div style="font-size:11px;color:#7c3aed;font-weight:500;text-transform:capitalize;"><%= adminUser ? adminUser.role : 'admin' %></div>
+        </div>
+      </div>
+      <form method="POST" action="/admin/logout" style="margin:0;">
+        <button type="submit" style="width:100%;padding:7px 0;background:#fff;border:1.5px solid #ddd6fe;border-radius:8px;color:#7c3aed;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .18s;">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="info-card"><i class="fas fa-phone-alt"></i><div><p class="info-label">Hotline</p><p class="info-value">(0274) 123-4567</p></div></div>
+    <div class="info-card"><i class="fas fa-clock"></i><div><p class="info-label">Jam Operasional</p><p class="info-value">08:00 - 14:00 WIB</p></div></div>
+  </div>
+</aside>

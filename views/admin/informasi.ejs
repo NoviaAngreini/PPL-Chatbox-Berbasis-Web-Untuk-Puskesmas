@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kelola Informasi Kesehatan - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-shield-alt"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital <span class="navbar-admin-badge">ADMIN</span></span>
+      <span class="brand-sub">Kelola Informasi Kesehatan</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Admin Mode</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <%- include('_sidebar') %>
+
+  <main class="main-content">
+    <div class="page-content">
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-newspaper"></i> Kelola Informasi Kesehatan</h2>
+        <p class="page-subtitle">Tambah, edit, dan hapus artikel informasi kesehatan yang tampil ke publik</p>
+      </div>
+
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <span class="admin-table-title"><i class="fas fa-newspaper"></i> Daftar Artikel (<%= informasiKesehatan.length %>)</span>
+          <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Tambah Artikel</button>
+        </div>
+
+        <% if (informasiKesehatan.length === 0) { %>
+        <div class="empty-state"><i class="fas fa-newspaper"></i><p>Belum ada artikel</p><small>Klik tombol tambah untuk membuat artikel pertama</small></div>
+        <% } else { %>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>#</th><th>Judul</th><th>Kategori</th><th>Icon</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <% informasiKesehatan.forEach(function(item, i){ %>
+              <tr>
+                <td style="color:var(--text-light);"><%= i+1 %></td>
+                <td><strong><%= item.judul %></strong><div style="font-size:12px;color:var(--text-light);margin-top:2px;"><%= item.isi.substring(0,60) %>...</div></td>
+                <td><span class="poli-status status-buka"><%= item.kategori %></span></td>
+                <td><i class="fas fa-<%= item.icon || 'info-circle' %>" style="color:var(--primary);font-size:16px;"></i></td>
+                <td style="color:var(--text-mid);font-size:13px;"><%= item.tanggal %></td>
+                <td>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn-sm edit" onclick='editArtikel(<%= JSON.stringify(item) %>)'><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn-sm delete" onclick="deleteArtikel(<%= item.id %>)"><i class="fas fa-trash"></i> Hapus</button>
+                  </div>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="artikelModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="artikelModalTitle">Tambah Artikel Kesehatan</span>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="artikelId"/>
+      <div class="form-group"><label class="form-label">Judul Artikel</label><input class="form-control" id="artikelJudul" placeholder="mis: Tips Menjaga Kesehatan"/></div>
+      <div class="form-group"><label class="form-label">Kategori</label>
+        <select class="form-control" id="artikelKategori">
+          <option>Pencegahan</option><option>Penyakit</option><option>Imunisasi</option>
+          <option>Gizi</option><option>Ibu & Anak</option><option>Lansia</option><option>Umum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Icon (Font Awesome tanpa "fa-")</label>
+        <input class="form-control" id="artikelIcon" placeholder="mis: shield-heart, virus, syringe, apple-alt"/>
+        <div style="font-size:11px;color:var(--text-light);margin-top:4px;">Preview: <i id="iconPreview" class="fas fa-info-circle" style="color:var(--primary);"></i></div>
+      </div>
+      <div class="form-group"><label class="form-label">Isi Artikel</label><textarea class="form-control" id="artikelIsi" rows="5" placeholder="Tulis isi artikel di sini..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="form-control-cancel" onclick="closeModal()">Batal</button>
+      <button class="btn-primary" onclick="saveArtikel()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('artikelIcon').addEventListener('input', function() {
+  document.getElementById('iconPreview').className = 'fas fa-' + (this.value || 'info-circle');
+});
+
+function openModal() {
+  document.getElementById('artikelModal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('artikelModal').classList.remove('open');
+  document.getElementById('artikelId').value = '';
+  document.getElementById('artikelJudul').value = '';
+  document.getElementById('artikelIsi').value = '';
+  document.getElementById('artikelIcon').value = '';
+  document.getElementById('artikelModalTitle').textContent = 'Tambah Artikel Kesehatan';
+}
+
+function editArtikel(item) {
+  document.getElementById('artikelModalTitle').textContent = 'Edit Artikel';
+  document.getElementById('artikelId').value = item.id;
+  document.getElementById('artikelJudul').value = item.judul;
+  document.getElementById('artikelKategori').value = item.kategori;
+  document.getElementById('artikelIsi').value = item.isi;
+  document.getElementById('artikelIcon').value = item.icon || '';
+  document.getElementById('iconPreview').className = 'fas fa-' + (item.icon || 'info-circle');
+  openModal();
+}
+
+async function saveArtikel() {
+  const id = document.getElementById('artikelId').value;
+  const data = {
+    judul: document.getElementById('artikelJudul').value.trim(),
+    kategori: document.getElementById('artikelKategori').value,
+    isi: document.getElementById('artikelIsi').value.trim(),
+    icon: document.getElementById('artikelIcon').value.trim() || 'info-circle'
+  };
+  if (!data.judul || !data.isi) return showToast('Judul dan isi harus diisi', 'error');
+  const url = id ? `/admin/informasi/${id}` : '/admin/informasi';
+  const method = id ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  if (res.ok) {
+    showToast(id ? 'Artikel diperbarui' : 'Artikel ditambahkan', 'success');
+    closeModal();
+    setTimeout(() => location.reload(), 800);
+  }
+}
+
+async function deleteArtikel(id) {
+  if (!confirm('Hapus artikel ini?')) return;
+  const res = await fetch(`/admin/informasi/${id}`, { method: 'DELETE' });
+  if (res.ok) { showToast('Artikel dihapus', 'success'); setTimeout(() => location.reload(), 600); }
+}
+
+document.getElementById('artikelModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>

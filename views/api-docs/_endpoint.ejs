@@ -1,0 +1,83 @@
+<div class="endpoint-card" id="<%= id %>">
+  <div class="endpoint-header" onclick="toggleEndpoint('<%= id %>')">
+    <span class="method-badge <%= method %>"><%= method %></span>
+    <span class="endpoint-path"><%= path %></span>
+    <span class="endpoint-desc"><%= desc %></span>
+    <% if (auth) { %><span class="auth-tag"><i class="fas fa-lock"></i> JWT</span><% } %>
+    <i class="fas fa-chevron-down chevron" id="chev-<%= id %>"></i>
+  </div>
+
+  <div class="endpoint-body" id="body-<%= id %>">
+
+    <% if (params && params.length > 0) { %>
+    <div class="ep-section">
+      <div class="ep-section-title">Parameter</div>
+      <table class="params-table">
+        <thead><tr><th>Nama</th><th>Tipe</th><th>Wajib</th><th>Deskripsi</th></tr></thead>
+        <tbody>
+          <% params.forEach(p => { %>
+          <tr>
+            <td><span class="param-name"><%= p.name %></span></td>
+            <td><span class="param-type"><%= p.type || '-' %></span></td>
+            <td><%= p.req ? '<span class="param-req">Wajib</span>' : '<span class="param-opt">Opsional</span>' %></td>
+            <td style="color:var(--text-dim);font-size:13px;"><%= p.desc %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+
+    <% if (query && query.length > 0) { %>
+    <div class="ep-section">
+      <div class="ep-section-title">Query String</div>
+      <table class="params-table">
+        <thead><tr><th>Parameter</th><th>Deskripsi</th></tr></thead>
+        <tbody>
+          <% query.forEach(q => { %>
+          <tr>
+            <td><span class="param-name">?<%= q.name %></span></td>
+            <td style="color:var(--text-dim);font-size:13px;"><%= q.desc %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+
+    <% if (exampleReq) { %>
+    <div class="ep-section">
+      <div class="ep-section-title">Contoh Request Body</div>
+      <div class="code-block"><%= exampleReq %></div>
+    </div>
+    <% } %>
+
+    <div class="ep-section">
+      <div class="ep-section-title">Contoh Response</div>
+      <div class="code-block"><%= exampleRes %></div>
+    </div>
+
+    <!-- Try it -->
+    <div class="try-panel">
+      <div class="try-title"><i class="fas fa-play-circle"></i> Coba Langsung</div>
+      <% if (auth) { %>
+      <p style="font-size:12px;color:#fbbf24;margin-bottom:10px;"><i class="fas fa-info-circle"></i> Endpoint ini memerlukan JWT Token. Isi token di kolom di atas lalu coba.</p>
+      <% } %>
+      <div class="try-row">
+        <span class="try-label">URL</span>
+        <input class="try-input" id="try-url-<%= id %>" value="<%= tryUrl %>"/>
+      </div>
+      <% if (tryBody) { %>
+      <div class="try-row">
+        <span class="try-label">Body</span>
+        <textarea class="try-input" id="try-body-<%= id %>"><%= tryBody %></textarea>
+      </div>
+      <% } %>
+      <button class="try-btn" onclick="tryEndpoint('<%= id %>', '<%= tryMethod %>', '<%= tryUrl %>', <%= auth %>)">
+        <i class="fas fa-paper-plane"></i> Kirim Request
+      </button>
+      <div class="try-response" id="try-res-<%= id %>"></div>
+    </div>
+
+  </div>
+</div>

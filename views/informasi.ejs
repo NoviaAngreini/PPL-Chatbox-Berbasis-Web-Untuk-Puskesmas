@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Informasi Kesehatan - Puskesmas Digital Darul Kamal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <div class="brand-icon"><i class="fas fa-stethoscope"></i></div>
+    <div class="brand-text">
+      <span class="brand-name">Puskesmas Digital Darul Kamal</span>
+      <span class="brand-sub">Layanan Kesehatan Terpadu</span>
+    </div>
+  </div>
+  <div class="navbar-right"><div class="status-badge"><span class="status-dot"></span><span>Online</span></div></div>
+  <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+</nav>
+
+<div class="app-container">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><p class="sidebar-title">Menu Utama</p></div>
+    <nav class="sidebar-nav">
+      <a href="/chat" class="nav-item"><i class="fas fa-comment-dots"></i><span>Chatbot</span></a>
+      <a href="/jadwal" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Jadwal & Dokter</span></a>
+      <a href="/riwayat" class="nav-item"><i class="fas fa-history"></i><span>Riwayat Chat</span></a>
+      <a href="/informasi" class="nav-item active"><i class="fas fa-notes-medical"></i><span>Info Kesehatan</span></a>
+      <a href="/tentang" class="nav-item"><i class="fas fa-hospital"></i><span>Tentang Puskesmas</span></a>
+      <div style="height:1px;background:var(--border);margin:8px 12px;"></div>
+      <a href="/admin/login" class="nav-item nav-admin"><i class="fas fa-shield-alt"></i><span>Panel Admin</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="info-card"><i class="fas fa-phone-alt"></i><div><p class="info-label">Hotline</p><p class="info-value">0813-6022-9095</p></div></div>
+      <div class="info-card"><i class="fas fa-clock"></i><div><p class="info-label">Jam Operasional</p><p class="info-value">08:00 - 14:00 WIB</p></div></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-content">
+      <div class="page-header">
+        <h2 class="page-title"><i class="fas fa-notes-medical"></i> Informasi Kesehatan</h2>
+        <p class="page-subtitle">Artikel dan tips kesehatan dari tim medis Puskesmas Digital</p>
+      </div>
+
+      <% if (informasiKesehatan.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-notes-medical"></i>
+        <p>Belum ada informasi kesehatan</p>
+        <small>Informasi akan ditampilkan setelah admin menambahkan artikel</small>
+      </div>
+      <% } else { %>
+      <div class="card-grid">
+        <% informasiKesehatan.forEach(function(item) { %>
+        <div class="info-kesehatan-card">
+          <div class="info-card-icon"><i class="fas fa-<%= item.icon || 'heartbeat' %>"></i></div>
+          <div class="info-card-kategori"><%= item.kategori %></div>
+          <h3 class="info-card-judul"><%= item.judul %></h3>
+          <p class="info-card-isi"><%= item.isi %></p>
+          <div class="info-card-tanggal"><i class="fas fa-calendar-alt"></i> <%= item.tanggal %></div>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="toast" id="toast"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>
