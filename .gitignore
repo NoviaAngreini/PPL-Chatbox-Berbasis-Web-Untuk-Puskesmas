@@ -20,4 +20,5 @@ Thumbs.db
 tmp/
 temp/
 
-data/
+data/admins.json
+data/apikeys.json
