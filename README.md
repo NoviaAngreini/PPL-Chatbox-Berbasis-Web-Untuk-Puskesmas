@@ -1,6 +1,6 @@
 # 🏥 Puskesmas Digital
 
-Web app fullstack sistem informasi puskesmas — Express.js + MySQL + REST API.
+Web app sistem informasi puskesmas
 
 ## 📁 Struktur Project
 

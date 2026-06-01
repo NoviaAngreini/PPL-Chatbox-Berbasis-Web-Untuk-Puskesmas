@@ -21,3 +21,4 @@ tmp/
 temp/
 
 data/apikeys.json
+data/admins.json
